@@ -1,0 +1,250 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct node
+{
+    int data;
+    struct node *left;
+    struct node *right;
+} Node;
+
+typedef struct tree
+{
+    Node *root;
+} Tree;
+
+void tree_initialize(Tree *tree);
+void tree_insert(Tree *tree, int data);
+void inorder(Tree *tree);
+void preorder(Tree *tree);
+void postorder(Tree *tree);
+void tree_delete(Tree *tree, int data);
+void tree_destroy(Tree *tree);
+
+
+/*----------------------*/
+
+
+#include<stdio.h>
+/*#include "bst.h"*/
+int main()
+{
+    int choice, loop = 1;
+    Tree my_tree;
+    tree_initialize(&my_tree);
+    while (loop)
+    {
+        scanf("%d", &choice);
+        switch (choice)
+        {
+            int number_of_elements, element, index;
+            int data;
+        case 1:
+            /* Insert elements */
+            scanf("%d", &element);
+            tree_insert(&my_tree, element);
+            break;
+        case 2:
+            /* Print elements in the preorder fashion */
+            preorder(&my_tree);
+            break;
+        case 3:
+            /* Print elements in the inorder fashion */
+            inorder(&my_tree);
+            break;
+        case 4:
+            /* Print elements in the postorder fashion */
+            postorder(&my_tree);
+            break;
+	case 5:
+            /* Delete elements */
+            scanf("%d", &element);
+            tree_delete(&my_tree, element);
+            break;
+        default:
+            tree_destroy(&my_tree);
+            loop = 0;
+            break;
+        }
+    }
+    return 0;
+}
+
+/*----------------------*/
+
+#include<stdio.h>
+/*#include "bst.h"*/
+void tree_initialize(Tree *tree)
+{
+    tree->root = NULL;
+}
+
+void tree_insert(Tree *tree, int data)
+ {
+
+   struct node *temp,*curr,*prev;
+
+  temp= malloc(sizeof(struct node));
+  temp->data=data;
+  temp->left=temp->right=NULL;
+  if(tree->root == NULL)
+    tree->root =temp;
+  else
+  {
+    curr= tree->root;
+    prev=NULL;
+    while(curr!=NULL)
+    {
+      prev=curr;
+      if(data <curr->data)
+        curr=curr->left;
+      else
+        curr=curr->right;
+    }
+   if(data <prev->data)
+     prev->left=temp;
+   else
+     prev->right=temp;
+ }
+}
+
+
+void tree_delete(Tree *tree, int element)
+{
+    struct node *temp, *current, *prev, *qptr, *ptr;
+    prev = NULL;
+    current = tree->root;
+    while(( current != NULL)&&(current->data != element))
+    {
+        prev = current;
+        if(element < current->data)
+        {
+            current = current->left;
+        }
+        else
+        {
+            current = current->right;
+        }
+    }
+    if( current == NULL)
+    {
+        return tree->root;
+    }
+    if((current->left == NULL)||(current->right == NULL))
+    {
+        if(current->left == NULL)
+        {
+            qptr = current->right;
+        }
+        else
+        {
+            qptr = current->left;
+        }
+
+
+        if(prev == NULL)
+        {
+            return qptr;
+        }
+        else if(current == prev->left)
+        {
+            prev->left = qptr;
+        }
+        else
+        {
+            prev->right = qptr;
+        }
+        free(current);
+      }
+   else
+   {
+       ptr = NULL;
+       temp = current->right;
+       while(temp->left != NULL)
+       {
+           ptr = temp;
+           temp = temp->left;
+       }
+       current->data = temp->data;
+       if(ptr != NULL)
+       {
+           ptr->left = temp->right;
+       }
+       else
+       {
+           current->right = temp->right;
+       }
+       free(temp);
+   }
+   return tree->root;
+}
+
+void tree_inorder(Node *r)
+{
+if(r!=NULL)
+	{
+		tree_inorder(r->left);
+		printf("%d",r->data);
+		tree_inorder(r->right);
+	}
+}
+
+void tree_preorder(Node *r)
+{
+if(r!=NULL)
+	{
+		printf("%d",r->data);
+		tree_inorder(r->left);
+
+		tree_inorder(r->right);
+	}
+}
+
+void tree_postorder(Node *r)
+{
+if(r!=NULL)
+	{
+		tree_inorder(r->left);
+
+		tree_inorder(r->right);
+		printf("%d",r->data);
+	}
+}
+
+void postorder(Tree *t)
+{
+   tree_preorder(t->root);
+}
+
+void preorder(Tree *t)
+{
+
+	tree_postorder(t->root);
+}
+
+void inorder(Tree *t)
+{
+    tree_inorder(t->root);
+}
+
+void destroy(Node *r)
+{
+    if(r != NULL)
+    {
+        destroy(r->left);
+        destroy(r->right);
+        free(r);
+    }
+}
+
+void tree_destroy(Tree *t)
+{
+    destroy(t->root);
+}
+
+/*----------------------*/
+
+
+
+
